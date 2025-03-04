@@ -1,32 +1,47 @@
-from tb6612 import MotorDriver
+# File imports
+from tb6612 import *
+from AS5600 import *
+from micromouse_parameters import *
+from position_calculator import *
+from machine import I2C, Pin
+from math import pi
+import math
 import time
 
-# Define motor control pins (adjust for your ESP32 wiring)
+# Setup
+i2c = I2C(0, scl=Pin(40), sda=Pin(41), freq=400000)
+z = AS5600(i2c, AS5600_id)
 motor = MotorDriver(ain1=5, ain2=18, pwma=9, bin1=11, bin2=12, pwmb=10, stby=4)
 
-print("Motor driver initialized.")
+# Initialize micromouse and distance determinator
+micromouse = Micromouse(wheel_diameter=35)  # Example wheel size in mm
+distance_determinator = DistanceDeterminator(micromouse)
 
-# Move forward at 50% speed
-print("Moving forward at 50% speed.")
-motor.set_motor("left", 32767)
-motor.set_motor("right", 32767)
-time.sleep(2)
+z.scan()
+i = 0
+previous_angle = z.ANGLE
 
-# Stop with braking
-print("Stopping with braking.")
-motor.stop()
-time.sleep(0)
+def update_motion(i):
+    global previous_angle
+    raw_angle = z.ANGLE  # Read the raw 12-bit angle value
+    angle_radians = (raw_angle / 4096) * 2 * pi  # Convert to radians
+      # Print with 4 decimal places
 
-# Move backward at 25% speed
-print("Moving backward at 25% speed.")
-motor.set_motor("left", -16384)
-motor.set_motor("right", -16384)
-time.sleep(2)
+    # Calculate distance and speed
+    distance_determinator.update(previous_angle, raw_angle)
 
-# Standby mode (high impedance)
-print("Entering standby mode.")
-motor.standby()
-time.sleep(2)
+    print("Speed: {:.2f} mm/s".format(distance_determinator.speed))
+    print("Total Distance: {:.2f} mm".format(distance_determinator.total_distance))
+    print("Angle: {:.4f} rad".format(angle_radians))
+        
+    previous_angle = raw_angle
 
-print("Stopping motors.")
-motor.stop()
+while True:
+    update_motion(i)
+    i += 1
+    if i > 5:
+        motor.set_motor("left", 50000)
+        motor.set_motor("right", 50000)
+    time.sleep(0.01)
+
+

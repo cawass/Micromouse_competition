@@ -7,15 +7,29 @@ I2C_CONFIG = {
 
 
 MOTOR_PINS = {
-    'ain1': 5,
-    'ain2': 18,
-    'pwma': 9,
-    'bin1': 11,
-    'bin2': 12,
-    'pwmb': 10,
-    'stby': 4
+    'ain1': 4,
+    'ain2': 5,
+    'pwma': 6,
+    'bin1': 15,
+    'bin2': 16,
+    'pwmb': 17,
+    'stby': 14
+}
+IR_PINS = {
+    'ir1': 10,
+    'ir2': 11,
+    'ir3': 12,
+    'ir4': 13
 }
 
+CONFIG_SWITCH = {
+    'switch1': 47,
+    'switch2': 21,
+    'switch3': 20,
+    'run_reset': 19,
+    'led1': 45,
+    'led2': 48
+}
 SENSOR_CONFIG = {
     #'address': 0x36,
     'address': 0x68,

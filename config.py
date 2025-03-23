@@ -20,3 +20,7 @@ SENSOR_CONFIG = {
     'address': 0x36,
     'resolution': 4096  # 12-bit resolution
 }
+
+Gyro = {
+    'address': 0x68,
+}

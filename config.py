@@ -17,10 +17,11 @@ MOTOR_PINS = {
 }
 
 SENSOR_CONFIG = {
-    'address': 0x36,
+    #'address': 0x36,
+    'address': 0x68,
     'resolution': 4096  # 12-bit resolution
 }
 
-Gyro = {
-    'address': 0x68,
+TOF = {
+    'address': 0x29,
 }
